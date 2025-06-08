@@ -1,0 +1,123 @@
+# ──────────────────────────────
+# 1. Base – ROS 2 Humble
+# ──────────────────────────────
+FROM osrf/ros:humble-desktop-full
+
+# before any 'apt-get update' that touches ros2-testing
+RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 \
+ && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F42ED6FBAB17C654
+
+RUN echo "deb http://packages.ros.org/ros2-testing/ubuntu $(lsb_release -cs) main" \
+ | tee /etc/apt/sources.list.d/ros2-testing.list
+
+ARG  DEBIAN_FRONTEND=noninteractive
+ARG  USERNAME=ros
+ARG  UID=1000
+ARG  GID=1000
+
+# ──────────────────────────────
+# 2. Non‑root user with sudo
+# ──────────────────────────────
+
+RUN apt-get update && apt-get install -y sudo git \
+ && addgroup --gid ${GID} ${USERNAME} \
+ && adduser  --uid ${UID} --gid ${GID} --disabled-password --gecos "" ${USERNAME} \
+ && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# ──────────────────────────────
+# 3. Empty workspace skeleton for base drivers
+#    (sources come in as volumes at run‑time)
+# ──────────────────────────────
+ENV BASE_WS=/home/${USERNAME}/base_ws
+RUN mkdir -p ${BASE_WS}/src \
+ && chown -R ${USERNAME}:${USERNAME} ${BASE_WS}
+
+# ──────────────────────────────
+# 4. Empty workspace skeleton for exteroceptive sensors
+#    (sources come in as volumes at run‑time)
+# ──────────────────────────────
+ENV SENSORS_WS=/home/${USERNAME}/sensors_ws
+RUN mkdir -p ${SENSORS_WS}/src \
+ && chown -R ${USERNAME}:${USERNAME} ${SENSORS_WS}
+
+# ──────────────────────────────
+# 5. Empty workspace skeleton for autonomy and task-related packages
+#    (sources come in as volumes at run‑time)
+# ──────────────────────────────
+ENV TASK_WS=/home/${USERNAME}/task_ws
+RUN mkdir -p ${TASK_WS}/src \
+ && chown -R ${USERNAME}:${USERNAME} ${TASK_WS}
+
+# ──────────────────────────────
+# 6. Empty directory for storing bash scripts
+#    (sources come in as volumes at run‑time)
+# ──────────────────────────────
+ENV BASH_SCRIPTS=/home/${USERNAME}/bash_scripts
+RUN mkdir -p ${BASH_SCRIPTS} \
+ && chown -R ${USERNAME}:${USERNAME} ${BASH_SCRIPTS}
+
+# ──────────────────────────────
+# 7. Empty directory for storing bash scripts
+#    (sources come in as volumes at run‑time)
+# ──────────────────────────────
+ENV ROSBAG_DIR=/home/${USERNAME}/rosbags
+RUN mkdir -p ${ROSBAG_DIR} \
+ && chown -R ${USERNAME}:${USERNAME} ${ROSBAG_DIR}
+
+# ──────────────────────────────
+# 8. Toolchain + rosdep
+#    (still running as root)
+# ──────────────────────────────
+# 1. Core build & ROS helpers
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        sudo git build-essential \
+        python3 python3-pip \
+        python3-colcon-common-extensions \
+        python3-rosdep python3-rosdep-modules && \
+    rm -rf /var/lib/apt/lists/*
+
+# 2. Convenience CLI tools
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        nano htop tmux net-tools && \
+    rm -rf /var/lib/apt/lists/*
+
+# 3. Extra ROS debs used by your workspace
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ros-humble-launch-testing \
+        ros-humble-tf-transformations \ 
+        ros-humble-launch-pytest \
+        ros-humble-ament-cmake-core \
+        && \
+    rm -rf /var/lib/apt/lists/*
+
+# 4. Python pip installs
+RUN python3 -m pip install --no-cache-dir --upgrade \
+    pip wheel \
+    setuptools==58.2.0 \
+    packaging==24.2 \
+    tmule==1.5.9
+    
+# ──────────────────────────────
+# 9. Drop privileges
+# ──────────────────────────────
+USER ${USERNAME}
+WORKDIR ${TASK_WS}
+
+# ──────────────────────────────
+# 10. Friendly hook:
+#    (source extension)
+# ──────────────────────────────
+RUN sed -i 's/^#\(force_color_prompt\)/\1/' /home/${USERNAME}/.bashrc
+
+# ── Friendly hook: source your extension if it exists ───────────────
+RUN echo '[ -f $HOME/bash_scripts/bashrc_extension.sh ] && \
+source $HOME/bash_scripts/bashrc_extension.sh' \
+      >> /home/${USERNAME}/.bashrc
+
+# ──────────────────────────────
+# 11. Default shell
+# ──────────────────────────────
+CMD ["/bin/bash"]
