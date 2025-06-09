@@ -1,11 +1,9 @@
-version: "3.9"
-
 services:
   ros2_dev:
     # — Build the image that lives in .devcontainer/Dockerfile ————————
     build:
       context: ..                       # root of the repo
-      dockerfile: .devcontainer/Dockerfile
+      dockerfile: docker/Dockerfile
     image: robot-ros2-humble        # resulting image name
 
     container_name: robot_ros2_devcontainer
@@ -24,7 +22,7 @@ services:
       - ../submodules/sensors_src:/home/ros/sensors_ws/src:rw
 
       # TASK_SRC
-.     - ../submodules/task_src:/home/ros/task_ws/src:rw
+      - ../submodules/task_src:/home/ros/task_ws/src:rw
 
       # Bash Scripts
       - ../bash_scripts:/home/ros/bash_scripts:rw
