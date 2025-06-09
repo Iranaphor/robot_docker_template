@@ -6,13 +6,40 @@ function d_create () {
                    up --build -d ros2_dev
 }
 
-function d_deps () {
+function d_deps_base () {
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
                    exec ros2_dev \
-                   bash -lc 'sudo apt-get update && \
+                   bash -lc 'cd $HOME/base_ws && \
+                             sudo apt-get update && \
                              rosdep update && \
                              rosdep install --from-paths src --ignore-src -r -y'
+}
+
+function d_deps_sensors () {
+    docker compose -f $DOCKER_COMPOSE_DIR \
+                   --project-name robot_ros2 \
+                   exec ros2_dev \
+                   bash -lc 'cd $HOME/sensors_ws && \
+                             sudo apt-get update && \
+                             rosdep update && \
+                             rosdep install --from-paths src --ignore-src -r -y'
+}
+
+function d_deps_task () {
+    docker compose -f $DOCKER_COMPOSE_DIR \
+                   --project-name robot_ros2 \
+                   exec ros2_dev \
+                   bash -lc 'cd $HOME/task_ws && \
+                             sudo apt-get update && \
+                             rosdep update && \
+                             rosdep install --from-paths src --ignore-src -r -y'
+}
+
+function d_deps_all () {
+    d_deps_base ;
+    d_deps_sensors ;
+    d_deps_task ;
 }
 
 function d_up () {
@@ -56,6 +83,7 @@ function d_build_all () {
 }
 
 function d_attach () {
+    ./can_host_setup.sh ;
     xhost +local:docker ;
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
@@ -65,7 +93,7 @@ function d_attach () {
 
 
 function d_all () {
-    d_create ; d_deps ; d_build_all ; d_attach
+    d_create ; d_deps_all ; d_build_all ; d_attach
 }
 
 function d_start () {

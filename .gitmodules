@@ -1,0 +1,13 @@
+[submodule "submodules/base_src/ugv_sdk"]
+	path = submodules/base_src/ugv_sdk
+	url = git@github.com:agilexrobotics/ugv_sdk
+[submodule "submodules/base_src/bunker_ros2"]
+	path = submodules/base_src/bunker_ros2
+	url = git@github.com:agilexrobotics/bunker_ros2
+	branch = humble
+[submodule "submodules/sensors_src/mosaic_h_ros2"]
+	path = submodules/sensors_src/mosaic_h_ros2
+	url = git@github.com:iranaphor/mosaic_h_ros2
+[submodule "submodules/task_src/topological_navigation"]
+	path = submodules/task_src/topological_navigation
+	url = git@github.com:lcas/topological_navigation

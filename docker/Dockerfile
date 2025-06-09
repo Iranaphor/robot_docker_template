@@ -93,7 +93,14 @@ RUN apt-get update && \
         && \
     rm -rf /var/lib/apt/lists/*
 
-# 4. Python pip installs
+# 4. Deps used for CAN connection
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        iproute2 can-utils && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# 5. Python pip installs
 RUN python3 -m pip install --no-cache-dir --upgrade \
     pip wheel \
     setuptools==58.2.0 \
@@ -104,7 +111,7 @@ RUN python3 -m pip install --no-cache-dir --upgrade \
 # 9. Drop privileges
 # ──────────────────────────────
 USER ${USERNAME}
-WORKDIR ${TASK_WS}
+WORKDIR /home/${USERNAME}
 
 # ──────────────────────────────
 # 10. Friendly hook:
