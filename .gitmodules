@@ -15,3 +15,11 @@
 	path = submodules/sensors_src/rplidar_ros
 	url = git@github.com:Slamtec/rplidar_ros.git
 	branch = ros2
+[submodule "submodules/environment_src/environment_common"]
+	path = submodules/environment_src/environment_common
+	url = git@github.com:lcas/environment_common.git
+	branch = main
+[submodule "submodules/environment_src/environment_template"]
+	path = submodules/environment_src/environment_template
+	url = git@github.com:lcas/environment_template.git
+	branch = riseholme_park_farm_strawberry_polytunnels
