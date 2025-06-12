@@ -25,9 +25,8 @@ export ROS_LOCALHOST_ONLY=0
 export ROS_DOMAIN_ID=101
 echo "ROS Domain ID - $ROS_DOMAIN_ID (local only = $ROS_LOCALHOST_ONLY)"
 
-
 # 4. Connect to the can usb adapter
-source $HOME/bash_scripts/can_setup.sh
+source $HOME/bash_scripts/can_container_setup.sh
 # test can connection using: candump can0
 
 
@@ -40,3 +39,8 @@ alias nano='nano -BEPOSUWx -T 4'
 # 6. Setup .tmux.conf
 TMUX_CONF="$HOME/bash_scripts/tmux.conf"
 [ ! -f "$HOME/.tmux.conf" ] && cp $TMUX_CONF "$HOME/.tmux.conf"
+
+
+# 7. Setup .tmule.yaml
+TMULE_FILE="$HOME/task_ws/src/tmules/launch.tmule.yaml"
+function tm () { tmule -c $TMULE_FILE $1 ; }

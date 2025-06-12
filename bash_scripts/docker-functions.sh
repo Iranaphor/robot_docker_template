@@ -1,12 +1,14 @@
 DOCKER_COMPOSE_DIR='./docker/docker-compose.yml'
 
 function d_create () {
+    cd $HOME/docker_workspaces/robot_docker_ros2 ;
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
                    up --build -d ros2_dev
 }
 
 function d_deps_base () {
+    cd $HOME/docker_workspaces/robot_docker_ros2 ;
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
                    exec ros2_dev \
@@ -17,6 +19,7 @@ function d_deps_base () {
 }
 
 function d_deps_sensors () {
+    cd $HOME/docker_workspaces/robot_docker_ros2 ;
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
                    exec ros2_dev \
@@ -27,6 +30,7 @@ function d_deps_sensors () {
 }
 
 function d_deps_task () {
+    cd $HOME/docker_workspaces/robot_docker_ros2 ;
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
                    exec ros2_dev \
@@ -43,6 +47,7 @@ function d_deps_all () {
 }
 
 function d_up () {
+    cd $HOME/docker_workspaces/robot_docker_ros2 ;
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
                    up -d
@@ -50,6 +55,7 @@ function d_up () {
 
 
 function d_build_base () {
+    cd $HOME/docker_workspaces/robot_docker_ros2 ;
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
                    exec ros2_dev \
@@ -59,6 +65,7 @@ function d_build_base () {
 }
 
 function d_build_sensors () {
+    cd $HOME/docker_workspaces/robot_docker_ros2 ;
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
                    exec ros2_dev \
@@ -68,6 +75,7 @@ function d_build_sensors () {
 }
 
 function d_build_task () {
+    cd $HOME/docker_workspaces/robot_docker_ros2 ;
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
                    exec ros2_dev \
@@ -83,12 +91,20 @@ function d_build_all () {
 }
 
 function d_attach () {
-    ./can_host_setup.sh ;
+    cd $HOME/docker_workspaces/robot_docker_ros2 ;
+    ./bash_scripts/can_host_setup.sh ;
     xhost +local:docker ;
     docker compose -f $DOCKER_COMPOSE_DIR \
                    --project-name robot_ros2 \
                    exec ros2_dev \
                    bash -l
+}
+
+function d_down () {
+    cd $HOME/docker_workspaces/robot_docker_ros2 ;
+    docker compose -f $DOCKER_COMPOSE_DIR \
+                   --project-name robot_ros2 \
+                   down
 }
 
 
@@ -97,5 +113,9 @@ function d_all () {
 }
 
 function d_start () {
-    d_up ; d_build_task; d_attach
+    d_up ; d_attach
+}
+
+function d_relaunch () {
+    d_down ; d_up ; d_attach
 }

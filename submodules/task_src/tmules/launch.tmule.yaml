@@ -1,0 +1,31 @@
+---
+session: my_limo
+init_cmd: |
+  #exec /bin/bash
+  cd @TMULE_CONFIG_DIR@ || true
+  set -o pipefail
+
+  source $HOME/.bashrc
+
+  export JOY_DEV='/dev/input/js0'
+  export JOY_CONFIG=$HOME/task_ws/src/tmules/logitech.yaml
+
+  export RTK_DEVICE='/dev/ttyACM0'
+
+windows:
+
+- name: base
+  panes:
+  - ros2 launch bunker_base bunker_base.launch.py
+
+- name: control
+  panes:
+  - ros2 run joy_linux joy_linux_node --ros-args -p dev:=$JOY_DEV
+  - ros2 run teleop_twist_joy teleop_node --ros-args --params-file $JOY_CONFIG
+  - ros2 topic echo /joy
+  - ros2 topic echo /cmd_vel
+
+- name: sensors
+  panes:
+  - ros2 run mosaic_h_ros2 rtk_publisher.py #--ros-args -p dev:=$RTK_DEV
+  - ros2 launch rplidar_ros view_rplidar_s1_launch.py

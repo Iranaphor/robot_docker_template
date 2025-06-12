@@ -22,7 +22,8 @@ ARG  GID=1000
 RUN apt-get update && apt-get install -y sudo git \
  && addgroup --gid ${GID} ${USERNAME} \
  && adduser  --uid ${UID} --gid ${GID} --disabled-password --gecos "" ${USERNAME} \
- && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+ && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
+ && addgroup dialout || true && usermod -a -G dialout ${USERNAME}
 
 # ──────────────────────────────
 # 3. Empty workspace skeleton for base drivers
@@ -80,7 +81,7 @@ RUN apt-get update && \
 # 2. Convenience CLI tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        nano htop tmux net-tools && \
+        nano htop tmux net-tools tree && \
     rm -rf /var/lib/apt/lists/*
 
 # 3. Extra ROS debs used by your workspace
@@ -90,6 +91,8 @@ RUN apt-get update && \
         ros-humble-tf-transformations \ 
         ros-humble-launch-pytest \
         ros-humble-ament-cmake-core \
+        libasio-dev \
+        ros-humble-joy-linux \
         && \
     rm -rf /var/lib/apt/lists/*
 
@@ -105,7 +108,8 @@ RUN python3 -m pip install --no-cache-dir --upgrade \
     pip wheel \
     setuptools==58.2.0 \
     packaging==24.2 \
-    tmule==1.5.9
+    tmule==1.5.9 \
+    pyserial
     
 # ──────────────────────────────
 # 9. Drop privileges

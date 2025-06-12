@@ -12,6 +12,10 @@ services:
     command: /bin/bash                  # default shell when you attach
     network_mode: host                  # helps ROS 2 discovery (optional)
 
+    privileged: true
+    devices:
+      - /dev:/dev
+
     # — Bind‑mount each git sub‑module into the workspace ————————————
     volumes:
 
