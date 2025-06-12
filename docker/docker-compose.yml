@@ -19,17 +19,15 @@ services:
     # — Bind‑mount each git sub‑module into the workspace ————————————
     volumes:
 
-      # BASE_SRC
+      # Attach volumes for each workspace src folder
       - ../submodules/base_src:/home/ros/base_ws/src:rw
-
-      # SENSORS_SRC
       - ../submodules/sensors_src:/home/ros/sensors_ws/src:rw
-
-      # TASK_SRC
-      - ../submodules/task_src:/home/ros/task_ws/src:rw
+      - ../submodules/autonomy_src:/home/ros/autonomy_ws/src:rw
+      - ../submodules/control_src:/home/ros/control_ws/src:rw
+      - ../submodules/environment_src:/home/ros/environment_ws/src:rw
 
       # Bash Scripts
-      - ../bash_scripts:/home/ros/bash_scripts:rw
+      - ../bash_scripts/container:/home/ros/bash_scripts:rw
 
       # Rosbag Storage
       - ../rosbags:/home/ros/rosbags:rw
@@ -43,7 +41,9 @@ services:
     environment:
       - BASE_WS=/home/ros/base_ws
       - SENSORS_WS=/home/ros/sensors_ws
-      - TASK_WS=/home/ros/task_ws
+      - AUTONOMY_WS=/home/ros/autonomy_ws
+      - CONTROL_WS=/home/ros/control_ws
+      - ENVIRONMENT_WS=/home/ros/environment_ws
       - BASH_SCRIPTS=/home/ros/bash_scripts
       - ROSBAGS_DIR=/home/ros/rosbags
       - DISPLAY=:0
@@ -60,8 +60,10 @@ volumes:
 # ./docker/[Dockerfile;docker-compose.yml]
 # ./submodules/base_src/
 # ./submodules/sensors_src/
-# ./submodules/task_src/
-# ./bash_scripts/[bashrc_extensions.sh]
+# ./submodules/autonomy_src/
+# ./submodules/control_src/
+# ./submodules/environment_src/
+# ./bash_scripts/container/[bashrc_extensions.sh]
 # ./rosbags/
 
 
@@ -78,9 +80,13 @@ volumes:
 # ./submodules/sensors_src/<realsense_sdk>
 # ./submodules/sensors_src/<lora_ros2_bridge>
 
-# ./submodules/task_src/<autonomous_navigation_controller>
-# ./submodules/task_src/<scheduling_manager>
-# ./submodules/task_src/<archeology_msgs>
+# ./submodules/autonomy_src/<autonomous_navigation_controller>
+
+# ./submodules/control_src/<scheduling_manager>
+# ./submodules/control_src/<archeology_msgs>
+
+# ./submodules/environment_src/<environment_common>
+# ./submodules/environment_src/<environment_template>
 
 # ./bash_scripts/docker_functions.sh
 # ./bash_scripts/bashrc_extensions.sh

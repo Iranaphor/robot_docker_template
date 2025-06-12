@@ -9,7 +9,7 @@
 	path = submodules/sensors_src/mosaic_h_ros2
 	url = git@github.com:iranaphor/mosaic_h_ros2
 [submodule "submodules/task_src/topological_navigation"]
-	path = submodules/task_src/topological_navigation
+	path = submodules/autonomy_src/topological_navigation
 	url = git@github.com:lcas/topological_navigation
 [submodule "submodules/sensors_src/rplidar_ros"]
 	path = submodules/sensors_src/rplidar_ros

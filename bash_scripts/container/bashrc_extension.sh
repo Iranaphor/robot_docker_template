@@ -15,7 +15,9 @@ source /opt/ros/humble/setup.bash
 # 2. Workspace overlay (if already built)
 [ -f "$HOME/base_ws/install/setup.bash" ] && source "$HOME/base_ws/install/setup.bash"
 [ -f "$HOME/sensors_ws/install/setup.bash" ] && source "$HOME/sensors_ws/install/setup.bash"
-[ -f "$HOME/task_ws/install/setup.bash" ] && source "$HOME/task_ws/install/setup.bash"
+[ -f "$HOME/autonomy_ws/install/setup.bash" ] && source "$HOME/autonomy_ws/install/setup.bash"
+[ -f "$HOME/control_ws/install/setup.bash" ] && source "$HOME/control_ws/install/setup.bash"
+[ -f "$HOME/environment_ws/install/setup.bash" ] && source "$HOME/environment_ws/install/setup.bash"
 
 
 # 3. ROS Configuration
@@ -42,5 +44,5 @@ TMUX_CONF="$HOME/bash_scripts/tmux.conf"
 
 
 # 7. Setup .tmule.yaml
-TMULE_FILE="$HOME/task_ws/src/tmules/launch.tmule.yaml"
+TMULE_FILE="$HOME/control_ws/src/tmules/launch.tmule.yaml"
 function tm () { tmule -c $TMULE_FILE $1 ; }

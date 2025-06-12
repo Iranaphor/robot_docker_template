@@ -26,31 +26,38 @@ RUN apt-get update && apt-get install -y sudo git \
  && addgroup dialout || true && usermod -a -G dialout ${USERNAME}
 
 # ──────────────────────────────
-# 3. Empty workspace skeleton for base drivers
+# 3. Empty workspace skeleton for submodules
 #    (sources come in as volumes at run‑time)
 # ──────────────────────────────
+
+# 1. Empty workspace skeleton for base drivers
 ENV BASE_WS=/home/${USERNAME}/base_ws
 RUN mkdir -p ${BASE_WS}/src \
  && chown -R ${USERNAME}:${USERNAME} ${BASE_WS}
 
-# ──────────────────────────────
-# 4. Empty workspace skeleton for exteroceptive sensors
-#    (sources come in as volumes at run‑time)
-# ──────────────────────────────
+# 2. Empty workspace skeleton for exteroceptive sensors
 ENV SENSORS_WS=/home/${USERNAME}/sensors_ws
 RUN mkdir -p ${SENSORS_WS}/src \
  && chown -R ${USERNAME}:${USERNAME} ${SENSORS_WS}
 
-# ──────────────────────────────
-# 5. Empty workspace skeleton for autonomy and task-related packages
-#    (sources come in as volumes at run‑time)
-# ──────────────────────────────
-ENV TASK_WS=/home/${USERNAME}/task_ws
-RUN mkdir -p ${TASK_WS}/src \
- && chown -R ${USERNAME}:${USERNAME} ${TASK_WS}
+# 3. Empty workspace skeleton for autonomy-related packages
+ENV AUTONOMY_WS=/home/${USERNAME}/autonomy_ws
+RUN mkdir -p ${AUTONOMY_WS}/src \
+ && chown -R ${USERNAME}:${USERNAME} ${AUTONOMY_WS}
+
+# 4. Empty workspace skeleton for contorl and task-related packages
+ENV CONTROL_WS=/home/${USERNAME}/control_ws
+RUN mkdir -p ${CONTROL_WS}/src \
+ && chown -R ${USERNAME}:${USERNAME} ${CONTROL_WS}
+
+
+# 5. Empty workspace skeleton for contorl and task-related packages
+ENV ENVIRONMENT_WS=/home/${USERNAME}/environment_ws
+RUN mkdir -p ${ENVIRONMENT_WS}/src \
+ && chown -R ${USERNAME}:${USERNAME} ${ENVIRONMENT_WS}
 
 # ──────────────────────────────
-# 6. Empty directory for storing bash scripts
+# 4. Empty directory for storing bash scripts
 #    (sources come in as volumes at run‑time)
 # ──────────────────────────────
 ENV BASH_SCRIPTS=/home/${USERNAME}/bash_scripts
@@ -58,7 +65,7 @@ RUN mkdir -p ${BASH_SCRIPTS} \
  && chown -R ${USERNAME}:${USERNAME} ${BASH_SCRIPTS}
 
 # ──────────────────────────────
-# 7. Empty directory for storing bash scripts
+# 5. Empty directory for storing bash scripts
 #    (sources come in as volumes at run‑time)
 # ──────────────────────────────
 ENV ROSBAG_DIR=/home/${USERNAME}/rosbags
@@ -66,7 +73,7 @@ RUN mkdir -p ${ROSBAG_DIR} \
  && chown -R ${USERNAME}:${USERNAME} ${ROSBAG_DIR}
 
 # ──────────────────────────────
-# 8. Toolchain + rosdep
+# 6. Toolchain + rosdep
 #    (still running as root)
 # ──────────────────────────────
 # 1. Core build & ROS helpers
@@ -112,13 +119,13 @@ RUN python3 -m pip install --no-cache-dir --upgrade \
     pyserial
     
 # ──────────────────────────────
-# 9. Drop privileges
+# 7. Drop privileges
 # ──────────────────────────────
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
 # ──────────────────────────────
-# 10. Friendly hook:
+# 8. Friendly hook:
 #    (source extension)
 # ──────────────────────────────
 RUN sed -i 's/^#\(force_color_prompt\)/\1/' /home/${USERNAME}/.bashrc
@@ -129,6 +136,6 @@ source $HOME/bash_scripts/bashrc_extension.sh' \
       >> /home/${USERNAME}/.bashrc
 
 # ──────────────────────────────
-# 11. Default shell
+# 9. Default shell
 # ──────────────────────────────
 CMD ["/bin/bash"]
